@@ -74,13 +74,13 @@ install_without_fuse() {
     echo "Creating desktop entry..."
     echo "[Desktop Entry]
 Name=Cursor
-Exec=$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox
+Exec=$EXTRACTED_PATH/squashfs-root/cursor --no-sandbox
 Icon=$ICON_PATH
 Type=Application
 Terminal=false" > $DESKTOP_ENTRY_PATH
 
     # Create alias for terminal access
-    echo "alias cursor='$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox'" >> "$USER_HOME/.bashrc"
+    echo "alias cursor='$EXTRACTED_PATH/squashfs-root/cursor --no-sandbox'" >> "$USER_HOME/.bashrc"
 
     echo "Cursor AI IDE installed successfully (without FUSE)."
 }
@@ -105,6 +105,6 @@ echo "\nInstallation complete! You can access Cursor AI using the following meth
 echo "1. **From the Application Menu:** Search for 'Cursor' and click the icon."
 echo "2. **From the Terminal:** Type 'cursor' and press Enter."
 echo "   - If installed with FUSE: '$APPIMAGE_PATH --no-sandbox'"
-echo "   - If installed without FUSE: '$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox'"
+echo "   - If installed without FUSE: '$EXTRACTED_PATH/squashfs-root/cursor --no-sandbox'"
 echo "3. **Using the Alias:** Restart your terminal or run 'source ~/.bashrc' to use 'cursor' command."
 echo "\nEnjoy Cursor AI! 🚀"
