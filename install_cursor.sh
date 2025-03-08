@@ -2,7 +2,7 @@
 
 # Define installation paths and URLs
 CURSOR_URL="https://downloader.cursor.sh/linux/appImage/x64"
-ICON_URL="https://raw.githubusercontent.com/rahuljangirwork/copmany-logos/refs/heads/main/cursor.png"
+ICON_URL="https://www.cursor.com/assets/videos/logo/placeholder-logo.webp"
 
 USER_HOME="$HOME"
 APPIMAGE_PATH="$USER_HOME/.local/bin/cursor.appimage"
@@ -14,26 +14,31 @@ EXTRACTED_PATH="$USER_HOME/.local/share/cursor-extracted"
 mkdir -p "$USER_HOME/.local/bin"
 mkdir -p "$USER_HOME/.local/share/icons"
 mkdir -p "$USER_HOME/.local/share/applications"
+mkdir -p "$EXTRACTED_PATH"
+
+# Download Cursor AppImage
+if [ ! -f "$APPIMAGE_PATH" ]; then
+    echo "Downloading Cursor AppImage..."
+    curl -L $CURSOR_URL -o $APPIMAGE_PATH
+    chmod +x $APPIMAGE_PATH
+fi
+
+# Download Cursor icon
+if [ ! -f "$ICON_PATH" ]; then
+    echo "Downloading Cursor icon..."
+    curl -L $ICON_URL -o $ICON_PATH
+fi
 
 # Function to install Cursor using AppImage and FUSE
 install_with_fuse() {
     echo "Installing Cursor AI IDE using FUSE..."
-
+    
     # Install libfuse2 if not installed
     if ! dpkg -s libfuse2 &> /dev/null; then
         echo "libfuse2 is not installed. Installing..."
         sudo apt update
         sudo apt install -y libfuse2
     fi
-
-    # Download Cursor AppImage
-    echo "Downloading Cursor AppImage..."
-    curl -L $CURSOR_URL -o $APPIMAGE_PATH
-    chmod +x $APPIMAGE_PATH
-
-    # Download Cursor icon
-    echo "Downloading Cursor icon..."
-    curl -L $ICON_URL -o $ICON_PATH
 
     # Create desktop entry
     echo "Creating desktop entry..."
@@ -47,23 +52,19 @@ Terminal=false" > $DESKTOP_ENTRY_PATH
     # Create alias for terminal access
     echo "alias cursor='$APPIMAGE_PATH --no-sandbox'" >> "$USER_HOME/.bashrc"
 
-    echo "Cursor AI IDE installed successfully."
+    echo "Cursor AI IDE installed successfully using FUSE."
 }
 
 # Function to install Cursor without FUSE (Extracting AppImage)
 install_without_fuse() {
     echo "Installing Cursor AI IDE without FUSE..."
     
-    # Download Cursor AppImage
-    echo "Downloading Cursor AppImage..."
-    curl -L $CURSOR_URL -o $APPIMAGE_PATH
-    chmod +x $APPIMAGE_PATH
-
     # Extract AppImage
-    echo "Extracting AppImage..."
-    mkdir -p $EXTRACTED_PATH
-    cd $EXTRACTED_PATH
-    $APPIMAGE_PATH --appimage-extract
+    if [ ! -d "$EXTRACTED_PATH/squashfs-root" ]; then
+        echo "Extracting AppImage..."
+        cd "$EXTRACTED_PATH"
+        $APPIMAGE_PATH --appimage-extract
+    fi
 
     # Fix sandboxing issue
     echo "Fixing sandboxing issue..."
@@ -82,7 +83,7 @@ Terminal=false" > $DESKTOP_ENTRY_PATH
     # Create alias for terminal access
     echo "alias cursor='$EXTRACTED_PATH/squashfs-root/cursor --no-sandbox'" >> "$USER_HOME/.bashrc"
 
-    echo "Cursor AI IDE installed successfully (without FUSE)."
+    echo "Cursor AI IDE installed successfully without FUSE."
 }
 
 # Ask the user for their preferred installation method

@@ -1,98 +1,73 @@
-# Cursor AI Ubuntu Install Script
+# Cursor AI IDE Installation Script
 
-This script automates the installation of **Cursor AI** on Ubuntu. It provides two installation methods:
+This script allows you to install the Cursor AI IDE on Ubuntu using either of the following methods:
 
-1. **Standard Installation (Requires FUSE)** - Uses AppImage directly.
-2. **Alternative Installation (Without FUSE)** - Extracts AppImage manually.
+1. **With FUSE** (Recommended) - Runs the AppImage directly.
+2. **Without FUSE** - Extracts the AppImage and runs it manually.
 
 ## Installation Steps
 
-### 1. Download the Script
+### 1. Download and Run the Script
 ```bash
-wget https://your-repository-url/install_cursor.sh
-```
-
-### 2. Make the Script Executable
-```bash
+curl -L -o install_cursor.sh https://your-script-url.com/install_cursor.sh
 chmod +x install_cursor.sh
+./install_cursor.sh
 ```
 
-### 3. Run the Script
-```bash
-sudo ./install_cursor.sh
-```
+### 2. Choose Installation Method
+When prompted, choose one of the following options:
+- **1) Install with FUSE (Recommended)**
+- **2) Install without FUSE (Extract AppImage)**
 
-### 4. Choose Installation Method
-- Press `1` for **Standard Installation (FUSE Required)**.
-- Press `2` for **Alternative Installation (No FUSE Required)**.
+### 3. Accessing Cursor AI
+Once installed, you can access Cursor AI in the following ways:
 
-## How to Access Cursor AI
+#### **From the Application Menu**
+- Search for 'Cursor' and click the icon.
 
-### **1. From the Application Menu (GUI)**
-- Open **"Activities"** or **"Show Applications"** (Ubuntu app launcher).
-- Search for **"Cursor"** and click on the icon to launch it.
-
-### **2. From the Terminal**
-#### **If Installed with FUSE (Option 1)**
-Run:
-```bash
-/opt/cursor.appimage --no-sandbox
-```
-Or create a shortcut:
-```bash
-alias cursor='/opt/cursor.appimage --no-sandbox'
-```
-Then, simply run:
+#### **From the Terminal**
 ```bash
 cursor
 ```
+Depending on the installation method:
+- If installed with FUSE: `~/.local/bin/cursor.appimage --no-sandbox`
+- If installed without FUSE: `~/.local/share/cursor-extracted/squashfs-root/cursor --no-sandbox`
 
-#### **If Installed Without FUSE (Option 2)**
-Navigate to the extracted folder:
+#### **Using the Alias**
+- Restart your terminal or run:
+  ```bash
+  source ~/.bashrc
+  ```
+- Now, you can launch Cursor using:
+  ```bash
+  cursor
+  ```
+
+## Uninstallation Steps
+If you wish to uninstall Cursor AI, follow these steps:
+
+### 1. Remove Cursor Files
 ```bash
-cd /opt/cursor-extracted/squashfs-root
-./AppRun --no-sandbox
-```
-To make it easier, create an alias:
-```bash
-alias cursor='/opt/cursor-extracted/squashfs-root/AppRun --no-sandbox'
-```
-Now, just type:
-```bash
-cursor
-```
-
-### **3. Using the Desktop Shortcut**
-If the script created a shortcut successfully, you can also launch it by clicking on **Cursor** in your application menu.
-
-## Features
-- 🛠 **Downloads the latest Cursor AI AppImage**
-- 🔧 **Checks and installs missing dependencies**
-- 🖥 **Creates a desktop shortcut for easy access**
-- 🛑 **Fixes sandboxing issues if using the extracted version**
-
-## Alternative Installation Without FUSE
-If FUSE causes issues, the script can extract the AppImage manually and run it from an extracted folder.
-
-```bash
-cd /opt/cursor-extracted/squashfs-root
-./AppRun --no-sandbox
+rm -rf ~/.local/bin/cursor.appimage
+rm -rf ~/.local/share/cursor-extracted
+rm -rf ~/.local/share/icons/cursor.png
+rm -rf ~/.local/share/applications/cursor.desktop
 ```
 
-## Uninstall Cursor AI
-To remove Cursor AI, run:
+### 2. Remove Alias (If Added)
 ```bash
-sudo rm -rf /opt/cursor* /usr/share/applications/cursor.desktop
+sed -i '/alias cursor=/d' ~/.bashrc
+source ~/.bashrc
 ```
 
-## Troubleshooting
-If you encounter sandboxing issues, try:
+### 3. Optional: Remove `libfuse2` (If Installed for Cursor)
 ```bash
-sudo chown root:root /opt/cursor-extracted/squashfs-root/chrome-sandbox
-sudo chmod 4755 /opt/cursor-extracted/squashfs-root/chrome-sandbox
+sudo apt remove --purge libfuse2 -y
 ```
 
----
+## Additional Information
+- The script ensures necessary dependencies like `libfuse2` are installed.
+- The Cursor icon is downloaded and used for a proper desktop entry.
+- A desktop shortcut is created for easy access.
 
-**Enjoy Cursor AI on Ubuntu! 🚀**
-
+Enjoy coding with Cursor AI! 🚀
