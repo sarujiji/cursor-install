@@ -1,4 +1,3 @@
-# cursor-install
 # Cursor AI Ubuntu Install Script
 
 This script automates the installation of **Cursor AI** on Ubuntu. It provides two installation methods:
@@ -10,7 +9,7 @@ This script automates the installation of **Cursor AI** on Ubuntu. It provides t
 
 ### 1. Download the Script
 ```bash
-wget https://sarujiji/cursor-install/install_cursor.sh
+wget https://your-repository-url/install_cursor.sh
 ```
 
 ### 2. Make the Script Executable
@@ -26,6 +25,45 @@ sudo ./install_cursor.sh
 ### 4. Choose Installation Method
 - Press `1` for **Standard Installation (FUSE Required)**.
 - Press `2` for **Alternative Installation (No FUSE Required)**.
+
+## How to Access Cursor AI
+
+### **1. From the Application Menu (GUI)**
+- Open **"Activities"** or **"Show Applications"** (Ubuntu app launcher).
+- Search for **"Cursor"** and click on the icon to launch it.
+
+### **2. From the Terminal**
+#### **If Installed with FUSE (Option 1)**
+Run:
+```bash
+/opt/cursor.appimage --no-sandbox
+```
+Or create a shortcut:
+```bash
+alias cursor='/opt/cursor.appimage --no-sandbox'
+```
+Then, simply run:
+```bash
+cursor
+```
+
+#### **If Installed Without FUSE (Option 2)**
+Navigate to the extracted folder:
+```bash
+cd /opt/cursor-extracted/squashfs-root
+./AppRun --no-sandbox
+```
+To make it easier, create an alias:
+```bash
+alias cursor='/opt/cursor-extracted/squashfs-root/AppRun --no-sandbox'
+```
+Now, just type:
+```bash
+cursor
+```
+
+### **3. Using the Desktop Shortcut**
+If the script created a shortcut successfully, you can also launch it by clicking on **Cursor** in your application menu.
 
 ## Features
 - 🛠 **Downloads the latest Cursor AI AppImage**

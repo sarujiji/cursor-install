@@ -38,6 +38,9 @@ Icon=$ICON_PATH
 Type=Application
 Terminal=false" | sudo tee $DESKTOP_ENTRY_PATH
 
+    # Create alias for terminal access
+    echo "alias cursor='$APPIMAGE_PATH --no-sandbox'" | sudo tee -a /etc/profile.d/cursor.sh
+
     echo "Cursor AI IDE installed successfully."
 }
 
@@ -70,6 +73,9 @@ Icon=$ICON_PATH
 Type=Application
 Terminal=false" | sudo tee $DESKTOP_ENTRY_PATH
 
+    # Create alias for terminal access
+    echo "alias cursor='$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox'" | sudo tee -a /etc/profile.d/cursor.sh
+
     echo "Cursor AI IDE installed successfully (without FUSE)."
 }
 
@@ -87,3 +93,12 @@ else
     echo "Invalid choice. Exiting."
     exit 1
 fi
+
+# Display access instructions
+echo "\nInstallation complete! You can access Cursor AI using the following methods:\n"
+echo "1. **From the Application Menu:** Search for 'Cursor' and click the icon."
+echo "2. **From the Terminal:** Type 'cursor' and press Enter."
+echo "   - If installed with FUSE: '/opt/cursor.appimage --no-sandbox'"
+echo "   - If installed without FUSE: '/opt/cursor-extracted/squashfs-root/AppRun --no-sandbox'"
+echo "3. **Using the Alias:** The script automatically sets up an alias so you can simply type 'cursor' in the terminal."
+echo "\nEnjoy Cursor AI! 🚀"
