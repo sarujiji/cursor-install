@@ -4,10 +4,16 @@
 CURSOR_URL="https://downloader.cursor.sh/linux/appImage/x64"
 ICON_URL="https://raw.githubusercontent.com/rahuljangirwork/copmany-logos/refs/heads/main/cursor.png"
 
-APPIMAGE_PATH="/opt/cursor.appimage"
-ICON_PATH="/opt/cursor.png"
-DESKTOP_ENTRY_PATH="/usr/share/applications/cursor.desktop"
-EXTRACTED_PATH="/opt/cursor-extracted"
+USER_HOME="$HOME"
+APPIMAGE_PATH="$USER_HOME/.local/bin/cursor.appimage"
+ICON_PATH="$USER_HOME/.local/share/icons/cursor.png"
+DESKTOP_ENTRY_PATH="$USER_HOME/.local/share/applications/cursor.desktop"
+EXTRACTED_PATH="$USER_HOME/.local/share/cursor-extracted"
+
+# Ensure necessary directories exist
+mkdir -p "$USER_HOME/.local/bin"
+mkdir -p "$USER_HOME/.local/share/icons"
+mkdir -p "$USER_HOME/.local/share/applications"
 
 # Function to install Cursor using AppImage and FUSE
 install_with_fuse() {
@@ -22,12 +28,12 @@ install_with_fuse() {
 
     # Download Cursor AppImage
     echo "Downloading Cursor AppImage..."
-    sudo curl -L $CURSOR_URL -o $APPIMAGE_PATH
-    sudo chmod +x $APPIMAGE_PATH
+    curl -L $CURSOR_URL -o $APPIMAGE_PATH
+    chmod +x $APPIMAGE_PATH
 
     # Download Cursor icon
     echo "Downloading Cursor icon..."
-    sudo curl -L $ICON_URL -o $ICON_PATH
+    curl -L $ICON_URL -o $ICON_PATH
 
     # Create desktop entry
     echo "Creating desktop entry..."
@@ -36,10 +42,10 @@ Name=Cursor
 Exec=$APPIMAGE_PATH --no-sandbox
 Icon=$ICON_PATH
 Type=Application
-Terminal=false" | sudo tee $DESKTOP_ENTRY_PATH
+Terminal=false" > $DESKTOP_ENTRY_PATH
 
     # Create alias for terminal access
-    echo "alias cursor='$APPIMAGE_PATH --no-sandbox'" | sudo tee -a /etc/profile.d/cursor.sh
+    echo "alias cursor='$APPIMAGE_PATH --no-sandbox'" >> "$USER_HOME/.bashrc"
 
     echo "Cursor AI IDE installed successfully."
 }
@@ -50,8 +56,8 @@ install_without_fuse() {
     
     # Download Cursor AppImage
     echo "Downloading Cursor AppImage..."
-    sudo curl -L $CURSOR_URL -o $APPIMAGE_PATH
-    sudo chmod +x $APPIMAGE_PATH
+    curl -L $CURSOR_URL -o $APPIMAGE_PATH
+    chmod +x $APPIMAGE_PATH
 
     # Extract AppImage
     echo "Extracting AppImage..."
@@ -61,8 +67,8 @@ install_without_fuse() {
 
     # Fix sandboxing issue
     echo "Fixing sandboxing issue..."
-    sudo chown root:root $EXTRACTED_PATH/squashfs-root/chrome-sandbox
-    sudo chmod 4755 $EXTRACTED_PATH/squashfs-root/chrome-sandbox
+    chown $USER:$USER $EXTRACTED_PATH/squashfs-root/chrome-sandbox
+    chmod 4755 $EXTRACTED_PATH/squashfs-root/chrome-sandbox
 
     # Create desktop entry
     echo "Creating desktop entry..."
@@ -71,10 +77,10 @@ Name=Cursor
 Exec=$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox
 Icon=$ICON_PATH
 Type=Application
-Terminal=false" | sudo tee $DESKTOP_ENTRY_PATH
+Terminal=false" > $DESKTOP_ENTRY_PATH
 
     # Create alias for terminal access
-    echo "alias cursor='$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox'" | sudo tee -a /etc/profile.d/cursor.sh
+    echo "alias cursor='$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox'" >> "$USER_HOME/.bashrc"
 
     echo "Cursor AI IDE installed successfully (without FUSE)."
 }
@@ -98,7 +104,7 @@ fi
 echo "\nInstallation complete! You can access Cursor AI using the following methods:\n"
 echo "1. **From the Application Menu:** Search for 'Cursor' and click the icon."
 echo "2. **From the Terminal:** Type 'cursor' and press Enter."
-echo "   - If installed with FUSE: '/opt/cursor.appimage --no-sandbox'"
-echo "   - If installed without FUSE: '/opt/cursor-extracted/squashfs-root/AppRun --no-sandbox'"
-echo "3. **Using the Alias:** The script automatically sets up an alias so you can simply type 'cursor' in the terminal."
+echo "   - If installed with FUSE: '$APPIMAGE_PATH --no-sandbox'"
+echo "   - If installed without FUSE: '$EXTRACTED_PATH/squashfs-root/AppRun --no-sandbox'"
+echo "3. **Using the Alias:** Restart your terminal or run 'source ~/.bashrc' to use 'cursor' command."
 echo "\nEnjoy Cursor AI! 🚀"
